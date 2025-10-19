@@ -1,0 +1,113 @@
+{
+  "name": "TUNAR POSTGRES",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -16
+      ],
+      "id": "3afd4270-64a9-44f1-b3ee-32f7c48c6c90",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.pgTuningQueries }}",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        352,
+        -16
+      ],
+      "id": "66cb681c-2518-4ce7-8a1b-1b5e280fc6b8",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "l4jaOVjYuQxghosh",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.pgTuningQueries = [\n  \"ALTER SYSTEM SET shared_buffers = '2GB'\",              \n  \"ALTER SYSTEM SET effective_cache_size = '6GB'\",        \n  \"ALTER SYSTEM SET work_mem = '32MB'\",                   \n  \"ALTER SYSTEM SET maintenance_work_mem = '512MB'\",      \n  \"ALTER SYSTEM SET max_connections = '400'\",             \n  \"ALTER SYSTEM SET superuser_reserved_connections = '3'\",\n  \"ALTER SYSTEM SET wal_buffers = '16MB'\",\n  \"ALTER SYSTEM SET checkpoint_completion_target = '0.9'\",\n  \"ALTER SYSTEM SET max_wal_size = '4GB'\",\n  \"ALTER SYSTEM SET min_wal_size = '1GB'\",\n  \"ALTER SYSTEM SET wal_compression = 'on'\",\n  \"ALTER SYSTEM SET random_page_cost = '1.1'\",\n  \"ALTER SYSTEM SET seq_page_cost = '1.0'\",\n  \"ALTER SYSTEM SET effective_io_concurrency = '100'\",    \n  \"ALTER SYSTEM SET synchronous_commit = 'off'\",          \n  \"ALTER SYSTEM SET commit_delay = '10'\",\n  \"ALTER SYSTEM SET commit_siblings = '5'\",\n  \"ALTER SYSTEM SET autovacuum_max_workers = '3'\",\n  \"ALTER SYSTEM SET autovacuum_naptime = '30s'\",\n  \"ALTER SYSTEM SET autovacuum_vacuum_cost_limit = '1500'\",\n  \"ALTER SYSTEM SET autovacuum_vacuum_scale_factor = '0.05'\",\n  \"ALTER SYSTEM SET max_worker_processes = '8'\",\n  \"ALTER SYSTEM SET max_parallel_workers_per_gather = '4'\",\n  \"ALTER SYSTEM SET max_parallel_workers = '8'\",\n  \"ALTER SYSTEM SET max_parallel_maintenance_workers = '4'\",\n  \"ALTER SYSTEM SET track_io_timing = 'on'\",\n  \"ALTER SYSTEM SET track_functions = 'all'\",\n  \"ALTER SYSTEM SET log_min_duration_statement = '500'\",\n  \"ALTER SYSTEM SET temp_buffers = '128MB'\",\n  \"ALTER SYSTEM SET default_statistics_target = '200'\",\n  \"ALTER SYSTEM SET jit = 'off'\",                         \n  \"ALTER SYSTEM SET huge_pages = 'try'\"\n];\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -16
+      ],
+      "id": "bafc8fb6-d06d-4643-92da-58e4aa223a59",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "pgTuningQueries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -16
+      ],
+      "id": "72871924-36f0-4421-ade3-00cff570e23d",
+      "name": "Split Out"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a5660147-4533-4a9b-9838-3c9383761482",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ec87e2f1841ac77b6d2f89d30699c7306cfa654fd296c470a12698bf79234a03"
+  },
+  "id": "1VnRM7mFTa2COc7e",
+  "tags": []
+}

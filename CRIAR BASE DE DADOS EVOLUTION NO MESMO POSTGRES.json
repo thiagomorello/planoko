@@ -1,0 +1,122 @@
+{
+  "name": "CRIAR BASE DE DADOS EVOLUTION NO MESMO POSTGRES",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.queries }}",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -16,
+        -16
+      ],
+      "id": "e4c562f6-21de-43b3-8623-fd9a19f457cc",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "l4jaOVjYuQxghosh",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fb8c4a8-a0c8-4244-bd9a-45bb5700c051",
+              "name": "queries",
+              "value": "={{[\n  \"DROP DATABASE IF EXISTS evolution;\",\n  \"CREATE DATABASE evolution WITH OWNER = administrator ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;\",\n  \"CREATE SCHEMA IF NOT EXISTS public AUTHORIZATION administrator;\",\n  \"GRANT ALL ON SCHEMA public TO administrator;\",\n  \"GRANT ALL ON SCHEMA public TO public;\",\n  \"ALTER DATABASE evolution SET search_path TO public;\"\n]\n}}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        -16
+      ],
+      "id": "66bb278e-2f23-4565-a3fb-f3426a8537b0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "queries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -16
+      ],
+      "id": "2b4b9c1b-2f42-445c-93c5-ccdabfc3d725",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -16
+      ],
+      "id": "f80132e4-33a3-4c92-81ba-4557f344ad6d",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4ecb12be-e6b7-420e-bf79-c448268a6e40",
+  "meta": {
+    "instanceId": "ec87e2f1841ac77b6d2f89d30699c7306cfa654fd296c470a12698bf79234a03"
+  },
+  "id": "gyDxUnjAcF6PFwb2",
+  "tags": []
+}
