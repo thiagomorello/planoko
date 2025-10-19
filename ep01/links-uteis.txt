@@ -1,0 +1,20 @@
+🧰 Links úteis
+
+🗂️ Repositório no GitHub (aqui está tudo separado por EP):
+👉 https://github.com/thiagomorello/planko
+👉 GIST DE TUNING DO POSTGRES:
+https://gist.github.com/thiagomorello/2c24384ec274bb50e2a09a91543ee453
+👉 GIST DE ENV VARS DO EVOLUTION API:
+https://gist.github.com/thiagomorello/1d8231b9bdb084e8b75e7361471e4d57
+
+🗂️ Repositório da Evolution API no GitHub (Necessário para upar no railway, conforme no video):
+https://github.com/EvolutionAPI/evolution-api
+
+📘 Documentação do n8n:
+👉 https://docs.n8n.io
+
+📱 Evolution API (WhatsApp):
+👉 https://doc.evolution-api.com/v2/api-reference/get-information
+
+☁️ Railway (deploy fácil):
+👉 https://railway.com?referralCode=ixLj7O
