@@ -1,0 +1,182 @@
+{
+  "name": "PLANOKO WEBHOOK",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone",
+              "value": "={{ $json.phone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "cc9e6504-ae58-4ad4-9019-463080b9ba64",
+      "name": "Select rows from a table",
+      "credentials": {
+        "mySql": {
+          "id": "3NmIhH8jKHNwaIeG",
+          "name": "PLANOKO MYSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        -112
+      ],
+      "id": "bdc05d88-a452-4d8c-a4e1-2445794219cb",
+      "name": "When chat message received",
+      "webhookId": "2fc21d69-3a11-41c0-9adf-667f558c7d97"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "41d4864b-52da-4dac-b134-df94f45d9bf1",
+              "name": "message",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "b1f71fe4-dd5f-4fbd-9837-92385b3aa24e",
+              "name": "phone",
+              "value": "123456",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -352,
+        -112
+      ],
+      "id": "9959646b-373b-4966-af3c-7d804acb7f9e",
+      "name": "Controle Manual (testes)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Controle Manual (testes)').item.json.message }}",
+        "options": {
+          "systemMessage": "=Você é o planoko um agente especialista em fazer o controle financeiro para o usuario. \n\nuser_id:{{ $json.id }}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        -112
+      ],
+      "id": "b3b5305e-311b-4466-90f4-4754103fb0cf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        128
+      ],
+      "id": "cf2a0f70-7b7c-4261-ac0d-f5bbd240d1ff",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "so5st4qKAW4hVGo1",
+          "name": "planoko openai"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Controle Manual (testes)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Controle Manual (testes)": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "04858094-5a8a-4aba-9fb3-8412c3a3f2b9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ec87e2f1841ac77b6d2f89d30699c7306cfa654fd296c470a12698bf79234a03"
+  },
+  "id": "MlGTgoJBlokd8qx1",
+  "tags": []
+}
